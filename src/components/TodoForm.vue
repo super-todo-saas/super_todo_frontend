@@ -5,17 +5,16 @@
         v-model="todo.title"
         name="title"
         type="text"
-        placeholder="Todo title"
+        placeholder="Title"
         className="input input-info w-full"
         required
       />
     </div>
 
-    <div class="pb-4">
+    <div v-if="props?.userRole === 'paid'" class="pb-4">
       <textarea
         v-model="todo.notes"
         name="notes"
-        v-if="props.userRole === 'paid'"
         className="textarea textarea-info w-full"
         placeholder="Note"
       ></textarea>
@@ -33,26 +32,47 @@
       </label>
     </div>
 
-    <button className="btn btn-info w-full">Add Todo</button>
+    <button className="btn btn-info w-full text-white">
+      {{ initialValue ? 'Update' : 'Add' }}
+    </button>
   </form>
 </template>
 
 <script setup lang="ts">
+import type { Todo } from '@/models/todo'
 import { createTodo } from '@/services/api.service'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
-const props = defineProps(['userRole'])
-const emits = defineEmits(['onError'])
+interface Props {
+  userRole: string
+  initialValue?: Todo
+}
 
-const todo = reactive({
+interface Emits {
+  (event: 'onError', message: string): unknown
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+
+const todo = reactive<Partial<Todo>>({
   title: '',
   completed: false,
   notes: '',
 })
 
+watch(
+  () => props?.initialValue,
+  (newValue) => {
+    todo.title = newValue?.title ?? ''
+    todo.notes = newValue?.notes ?? ''
+    todo.completed = newValue?.completed ?? false
+  },
+)
+
 const createNewTodo = async () => {
   try {
-    const isCreateSuccess = await createTodo({ title: todo.title, notes: todo?.notes })
+    const isCreateSuccess = await createTodo({ title: todo?.title ?? '', notes: todo?.notes })
 
     if (isCreateSuccess) {
       todo.title = ''

@@ -6404,9 +6404,9 @@ __metadata:
   linkType: hard
 
 "vue-component-type-helpers@npm:^2.0.0":
-  version: 2.2.2
-  resolution: "vue-component-type-helpers@npm:2.2.2"
-  checksum: 9dca47340f8602590444e75b5262ffaff0d878dda565c18a83b0ca7d945ad8041008e446db7d3853aa23048af025892d5a65d0b59d5914cccce28b08d1b635bb
+  version: 2.2.4
+  resolution: "vue-component-type-helpers@npm:2.2.4"
+  checksum: 3b520bb86745ec25e33a7aa3b6f70d9a8d5eba7954b7b5f2d437b39c402acfc867b6ffddf6dd890c3042166bf62f110ef70d3c8bf252b836e42217d92a3e110a
   languageName: node
   linkType: hard
 
