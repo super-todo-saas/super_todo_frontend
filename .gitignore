@@ -31,3 +31,6 @@ coverage
 *.tsbuildinfo
 
 .env
+
+# Rollup Visualize
+stats.html
