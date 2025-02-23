@@ -36,4 +36,3 @@ coverage
 stats.html
 
 package-lock.json
-yarn.lock
