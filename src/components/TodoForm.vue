@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="createNewTodo" class="w-full mx-auto p-4 rounded-lg shadow-lg">
+  <form @submit.prevent="createOrUpdateTodo" class="w-full mx-auto p-4 rounded-lg shadow-lg">
     <div class="pb-4">
       <input
         v-model="todo.title"
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import type { Todo } from '@/models/todo'
-import { createTodo } from '@/services/api.service'
+import { createTodo, updateTodo } from '@/services/api.service'
 import { reactive, watch } from 'vue'
 
 interface Props {
@@ -50,6 +50,7 @@ interface Props {
 
 interface Emits {
   (event: 'onError', message: string): unknown
+  (event: 'onChange'): unknown
 }
 
 const props = defineProps<Props>()
@@ -58,7 +59,7 @@ const emits = defineEmits<Emits>()
 const todo = reactive<Partial<Todo>>({
   title: '',
   completed: false,
-  notes: '',
+  notes: undefined,
 })
 
 watch(
@@ -70,17 +71,35 @@ watch(
   },
 )
 
-const createNewTodo = async () => {
+const createOrUpdateTodo = async () => {
   try {
-    const isCreateSuccess = await createTodo({ title: todo?.title ?? '', notes: todo?.notes })
+    let isCreateSuccess: boolean = false
+
+    if (props?.initialValue) {
+      isCreateSuccess = await updateTodo(props?.initialValue?.id, {
+        title: todo?.title ?? '',
+        notes: todo?.notes ?? undefined,
+        completed: todo?.completed ?? false,
+        userRole: props?.userRole,
+      })
+    } else {
+      isCreateSuccess = await createTodo({
+        title: todo?.title ?? '',
+        notes: todo?.notes ?? undefined,
+        completed: todo?.completed ?? false,
+        userRole: props?.userRole,
+      })
+    }
 
     if (isCreateSuccess) {
       todo.title = ''
       todo.notes = ''
       todo.completed = false
+
+      emits('onChange')
     }
-  } catch (err: unknown) {
-    const errorMessage = (err as Error)?.message ?? 'Error occured'
+  } catch (err: any) {
+    const errorMessage = err?.message ?? 'Error occured'
     emits('onError', errorMessage)
   }
 }

@@ -1,5 +1,8 @@
 import type { Todo } from '@/models/todo'
 
+/**
+ * Use this mock data to simulate a list of todos for testing purposes.
+ */
 export const MockTodos: Todo[] = [
   {
     id: 1,

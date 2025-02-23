@@ -8,6 +8,7 @@
         :userRole="userRole"
         :initial-value="updatingTodo"
         @on-error="handleTodoError"
+        @on-change="handleAfterCreateOrUpdate"
       />
       <UserPlan class="w-full" :userRole="userRole" />
     </div>
@@ -19,7 +20,7 @@
           class="rounded-md !mb-2"
           :class="todo?.completed ? 'bg-lime-100' : 'bg-sky-100'"
         >
-          <TodoItem :todo="todo" @on-update="handleUpdateTodo" />
+          <TodoItem :todo="todo" @on-update="handleUpdateTodo" @on-delete="handleDeleteTodo" />
         </div>
       </div>
       <div v-else class="text-center text-black">No Todo yet. Add your first Todo!</div>
@@ -34,7 +35,7 @@ import TodoForm from '@/components/TodoForm.vue'
 import TodoItem from '@/components/TodoItem.vue'
 import UserPlan from '@/components/UserPlan.vue'
 import type { Todo } from '@/models/todo'
-import { fetchTodos } from '@/services/api.service'
+import { fetchTodos, deleteTodo } from '@/services/api.service'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -64,6 +65,16 @@ const handleTodoError = (err: string) => {
 
 const handleUpdateTodo = (todo: Todo) => {
   updatingTodo.value = todo
+  window.scrollTo(0, 0)
+}
+
+const handleDeleteTodo = (id: number) => {
+  deleteTodo(id)?.then(() => loadTodos())
+}
+
+const handleAfterCreateOrUpdate = () => {
+  updatingTodo.value = undefined
+  loadTodos()
 }
 
 watch(

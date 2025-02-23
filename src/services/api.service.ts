@@ -1,4 +1,4 @@
-import { MockTodos } from '@/mocks/todo'
+import type { UpdateTodoDto } from '@/dtos/update-dto'
 import type { Todo } from '@/models/todo'
 import axios from 'axios'
 
@@ -14,65 +14,72 @@ const apiClient = axios.create({
 })
 
 /**
- * Fetch todos in pagination mode.
+ * Fetch all todos
  * @param userRole - 'free' | 'paid'
  * @returns Todos
  */
-export const fetchTodos = async (userRole: string): Promise<Todo[]> => {
+export const fetchTodos = async (): Promise<Todo[]> => {
   try {
-    const response = await apiClient.get('/todos', {
-      params: { userRole },
+    const response = await apiClient.get('/', {
+      params: {},
     })
     return response.data
-  } catch (error) {
-    console.error('Fetch Todos error:', error)
-    // throw error
-    return MockTodos
+  } catch (error: any) {
+    throw Error(error?.response?.data?.message ?? error?.message)
   }
 }
 
 /**
- * Create a new Todo.
- * @param newTodo - New Todo data
+ * Create a new Todo
+ * @param data - New Todo data
  * @returns Created Todo
  */
-export const createTodo = async (newTodo: { title: string; notes?: string }): Promise<Todo> => {
+export const createTodo = async (data: {
+  title: string
+  notes?: string
+  userRole: string
+}): Promise<Todo> => {
   try {
-    const response = await apiClient.post('/todos', newTodo)
+    const response = await apiClient.post('/', data)
     if (response?.status === 201) {
       return response.data
     }
     throw Error('Create Todo failed')
-  } catch (error) {
-    throw error
+  } catch (error: any) {
+    throw Error(error?.response?.data?.message ?? error?.message)
   }
 }
 
 /**
- * Update a Todo by ID.
+ * Update a Todo by ID
  * @param id - Todo ID
- * @param updatedFields - Properties need to update
- * @returns Todo after updated
+ * @param data - Properties need to update
+ * @returns Updated Todo
  */
-export const updateTodo = async (id: number, updatedFields: Partial<Todo>): Promise<Todo> => {
+export const updateTodo = async (id: number, data: UpdateTodoDto): Promise<Todo> => {
   try {
-    const response = await apiClient.put(`/todos/${id}`, updatedFields)
-    return response.data
-  } catch (error) {
-    console.error(`Update Todo has ${id} error:`, error)
-    throw error
+    const response = await apiClient.put(`/${id}`, data)
+    if (response?.status === 200) {
+      return response.data
+    }
+    throw Error('Update Todo failed')
+  } catch (error: any) {
+    throw Error(error?.response?.data?.message ?? error?.message)
   }
 }
 
 /**
- * Delete a Todo by ID.
+ * Delete a Todo by ID
  * @param id - Todo ID
  */
 export const deleteTodo = async (id: number): Promise<void> => {
   try {
-    await apiClient.delete(`/todos/${id}`)
-  } catch (error) {
-    console.error(`Delete Todo has ${id} error:`, error)
-    throw error
+    const response = await apiClient.delete(`/${id}`)
+    if (response?.status === 200) {
+      return response.data
+    }
+    throw Error('Delete Todo failed')
+  } catch (error: any) {
+    throw Error(error?.response?.data?.message ?? error?.message)
   }
 }
