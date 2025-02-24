@@ -1,25 +1,14 @@
 <template>
-  <div
-    class="container flex flex-col md:flex-row justify-start items-start gap-5 w-full md:w-2/3 mx-auto"
-  >
+  <div class="container flex flex-col md:flex-row justify-start items-start gap-5 w-full md:w-2/3 mx-auto">
     <div class="flex flex-col gap-y-2 w-full md:w-1/3">
-      <TodoForm
-        class="w-full"
-        :userRole="userRole"
-        :initial-value="updatingTodo"
-        @on-error="handleTodoError"
-        @on-change="handleAfterCreateOrUpdate"
-      />
+      <TodoForm class="w-full" :userRole="userRole" :initial-value="updatingTodo" @on-error="handleTodoError"
+        @on-change="handleAfterCreateOrUpdate" />
       <UserPlan class="w-full" :userRole="userRole" />
     </div>
     <div class="w-full rounded-lg shadow-lg p-4 md:w-2/3">
       <div v-if="todos.length > 0" class="my-2">
-        <div
-          v-for="todo in todos"
-          :key="todo.id"
-          class="rounded-md !mb-2"
-          :class="todo?.completed ? 'bg-lime-100' : 'bg-sky-100'"
-        >
+        <div v-for="todo in todos" :key="todo.id" class="rounded-md !mb-2"
+          :class="todo?.completed ? 'bg-lime-100' : 'bg-sky-100'">
           <TodoItem :todo="todo" @on-update="handleUpdateTodo" @on-delete="handleDeleteTodo" />
         </div>
       </div>
@@ -53,7 +42,7 @@ const route = useRoute()
 const userRole = ref<string>(route.query?.userRole as string)
 
 const loadTodos = async () => {
-  const res = await fetchTodos(userRole.value)
+  const res = await fetchTodos()
   todos.value = res.map((todo) => ({ ...todo, open: false }))
 }
 

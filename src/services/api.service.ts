@@ -1,4 +1,4 @@
-import type { UpdateTodoDto } from '@/dtos/update-dto'
+import { CreateTodoDto } from '@/dtos/create-todo'
 import type { Todo } from '@/models/todo'
 import axios from 'axios'
 
@@ -34,11 +34,7 @@ export const fetchTodos = async (): Promise<Todo[]> => {
  * @param data - New Todo data
  * @returns Created Todo
  */
-export const createTodo = async (data: {
-  title: string
-  notes?: string
-  userRole: string
-}): Promise<Todo> => {
+export const createTodo = async (data: CreateTodoDto): Promise<Todo> => {
   try {
     const response = await apiClient.post('/', data)
     if (response?.status === 201) {
@@ -56,7 +52,7 @@ export const createTodo = async (data: {
  * @param data - Properties need to update
  * @returns Updated Todo
  */
-export const updateTodo = async (id: number, data: UpdateTodoDto): Promise<Todo> => {
+export const updateTodo = async (id: number, data: CreateTodoDto): Promise<Todo> => {
   try {
     const response = await apiClient.put(`/${id}`, data)
     if (response?.status === 200) {

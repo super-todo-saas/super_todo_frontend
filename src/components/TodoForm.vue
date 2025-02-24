@@ -73,17 +73,17 @@ watch(
 
 const createOrUpdateTodo = async () => {
   try {
-    let isCreateSuccess: boolean = false
+    let result: Todo;
 
     if (props?.initialValue) {
-      isCreateSuccess = await updateTodo(props?.initialValue?.id, {
+      result = await updateTodo(props?.initialValue?.id, {
         title: todo?.title ?? '',
         notes: todo?.notes ?? undefined,
         completed: todo?.completed ?? false,
         userRole: props?.userRole,
       })
     } else {
-      isCreateSuccess = await createTodo({
+      result = await createTodo({
         title: todo?.title ?? '',
         notes: todo?.notes ?? undefined,
         completed: todo?.completed ?? false,
@@ -91,7 +91,7 @@ const createOrUpdateTodo = async () => {
       })
     }
 
-    if (isCreateSuccess) {
+    if (result) {
       todo.title = ''
       todo.notes = ''
       todo.completed = false
