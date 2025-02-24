@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${VITE_PORT}:80'
+    environment:
+      - PORT=${VITE_PORT}
+    restart: unless-stopped
